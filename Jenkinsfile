@@ -52,6 +52,23 @@ pipeline {
             }
         }
 
+
+        stage('Check Kubernetes Connection') {
+    steps {
+        script {
+            retry(3) {
+                timeout(time: 1, unit: 'MINUTES') {
+                    sh """
+                        echo "Testing Kubernetes connection..."
+                        kubectl cluster-info
+                        kubectl get nodes
+                        echo "✅ Kubernetes connection OK"
+                    """
+                }
+            }
+        }
+    }
+}
         stage('Deploy to Kubernetes') {
             steps {
                 script {
